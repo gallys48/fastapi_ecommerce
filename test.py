@@ -1,31 +1,18 @@
-from sqlalchemy import ForeignKey, Integer, String, Text, Table, Date
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from database import get_db
+from sqlalchemy import select, update
+from app.models.post import PostModel
 
-class Base(DeclarativeBase):
-    pass
+router = APIRouter()
 
-class Project(Base):
-    __tablename__ = "projects"
+@router.delete("/{post_id}", status_code=status.HTTP_200_OK)
+async def get_users(post_id:int, db: Session = Depends(get_db)):
+    post = db.scalars(select(PostModel).where(PostModel.id == post_id,
+                                              PostModel.is_active == True)).first()
+    if post is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found or inactive")
 
-    id = mapped_column(Integer, primary_key=True)
-    name = mapped_column(String(150), nullable=False)
-    start_date = mapped_column(Date, nullable=False)
-
-    employee: Mapped[list["Employee"]] = relationship(secondary="participations",back_populates="project", viewonly=True)
-
-class Employee(Base):
-    __tablename__ = "employees"
-
-    id = mapped_column(Integer, primary_key=True)
-    name = mapped_column(String(100), nullable=False)
-    email = mapped_column(String(120), nullable=False, unique=True)
-
-    project: Mapped[list["Project"]] = relationship(secondary="participations", back_populates="employee", viewonly=True)
-
-class Participation(Base):
-    __tablename__ = "participations"
-
-    project_id = mapped_column(Integer, ForeignKey("projects.id"), primary_key=True)
-    employee_id = mapped_column(Integer, ForeignKey("employees.id"), primary_key=True)
-    role = mapped_column(String(50), nullable=False)
-
+    db.execute(update(PostModel).where(PostModel.id == post_id).values(is_active = False))
+    db.commit()
+    return "Post marked as inactive"
