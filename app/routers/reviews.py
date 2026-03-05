@@ -64,8 +64,6 @@ async def add_review(review: ReviewCreate, db:AsyncSession = Depends(get_async_d
 async def delete_review(review_id: int, db: AsyncSession = Depends(get_async_db), current_user = Depends(get_current_user)):
     review_result = await db.scalars(select(ReviewModel).where(ReviewModel.id == review_id, ReviewModel.is_active == True))
     review = review_result.first()
-    print(f"{current_user.id}-------------------------------")
-    print(f"{review.user_id}-------------------------------")
     if review is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Review not found or deleted")
 
