@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from decimal import Decimal
 
-
+from datetime import datetime
 
 class CategoryCreate(BaseModel):
     """
@@ -50,6 +50,7 @@ class Product(BaseModel):
     stock: int = Field(..., description="Количество товара на складе (0 или больше)")
     category_id: int = Field(..., description="ID категории, к которой относится товар")
     is_active: bool = Field(..., description="Активность товара")
+    rating: float
     model_config = ConfigDict(from_attributes=True)
 
 class User(BaseModel):
@@ -63,3 +64,25 @@ class UserCreate(BaseModel):
     email: EmailStr = Field(description="Email пользователя")
     password: str = Field(min_length=8, description="Пароль (минимум 8 символов)")
     role: str = Field(default="buyer", pattern="^(buyer|seller|admin)$", description="Роль: 'buyer' или 'seller' или 'admin'")
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+class Review(BaseModel):
+    """
+    Модель для ответа с данными отзыва.
+    Используется в GET-запросах.
+    """
+    id: int
+    user_id: int
+    product_id: int
+    comment: str
+    comment_date: datetime
+    grade: int
+    is_active: bool
+    model_config = ConfigDict(from_attributes=True)
+
+class ReviewCreate(BaseModel):
+    product_id: int
+    comment: str
+    grade: int = Field(..., ge=1, le=5)
