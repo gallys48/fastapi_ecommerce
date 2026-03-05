@@ -17,5 +17,7 @@ class Product(Base):
     stock = mapped_column(Integer, nullable=False)
     is_active = mapped_column(Boolean, default=True)
     category_id = mapped_column(Integer, ForeignKey("categories.id"), nullable= False)
+    seller_id = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
 
     category: Mapped["Category"] = relationship("Category", back_populates="products")
+    seller: Mapped["User"] = relationship("User", back_populates="products")
