@@ -46,8 +46,6 @@ async def add_review(review: ReviewCreate, db:AsyncSession = Depends(get_async_d
     if product is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found or deleted")
 
-    if review.grade >5 or review.grade < 1:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Grade must be in range 1-5")
 
     db_review = ReviewModel(
         user_id = current_user.id,
