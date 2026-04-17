@@ -1,24 +1,34 @@
-from fastapi import APIRouter, Depends, status, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_async_db
-from sqlalchemy import select, update
-from app.models.promocode import PromoCodeModel
+from fastapi import FastAPI
+from loguru import logger
+from fastapi.middleware.cors import CORSMiddleware
 
-router = APIRouter()
+logger.add("requests.log", level="INFO")
 
-@router.delete("/{promocode_id}", status_code=status.HTTP_200_OK)
-async def delete_promocode(promocode_id:int, db:AsyncSession = Depends(get_async_db)):
-    promocode_smth = await db.scalars(select(PromoCodeModel).where(PromoCodeModel.id == promocode_id,
-                                                             PromoCodeModel.is_active == True))
-    db_promocode = promocode_smth.first()
-    if db_promocode is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="promocode not found")
-
-    await db.execute(update(PromoCodeModel).where(PromoCodeModel.id == promocode_id).values(is_active = False))
-    await db.commit()
-    return {"status": "success", "message": "Promocode marked as inactive"}
+app = FastAPI()
 
 
+origins = [
+    "http://localhost:8000",
+    "https://mysite.com",
+    "null"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["Content-Type"],
+)
+
+@app.get("/greet/{username}")
+async def greeting(username):
+    logger.info(f"Received GET request to /greet/{username}")
+    log_user_greeting(username)
+    return {"greeting": f"Hello, {username}!"}
+
+def log_user_greeting(username:str):
+    logger.debug(f"Greeted user: {username}")
 
 
 

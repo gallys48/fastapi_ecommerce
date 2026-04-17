@@ -1,0 +1,6 @@
+Log: [4c6fd09a-61ad-437e-bbfe-28edc282b360:2026-04-17T15:17:34.080839+0700 - ERROR - Request to / failed: 'URL' object has no attribute 'parh']
+Log: [39b3f541-87e3-467c-b3e4-44518cb4ca76:2026-04-17T15:19:25.201105+0700 - ERROR - Request to / failed: 'URL' object has no attribute 'parh']
+Log: [9b3d7ff0-d241-4d90-a39e-98666db9a06d:2026-04-17T15:20:30.747485+0700 - INFO - Successfully accessed /]
+Log: [8f73199d-b444-4120-a580-b407b80c7e50:2026-04-17T15:20:57.637176+0700 - INFO - Successfully accessed /docs]
+Log: [e3628597-fe66-4af7-a0e6-bf0a469a8778:2026-04-17T15:20:58.483736+0700 - INFO - Successfully accessed /openapi.json]
+Log: [b2ab808f-f907-42ab-a238-649e26bca95b:2026-04-17T15:22:33.636676+0700 - WARNING - Request to /test failed]
